@@ -8,9 +8,10 @@ import com.patopunchstudio.graphics.Spritesheet;
 public class Bullet extends Rectangle{
   public int dirX = 0;
   public int dirY = -1;
-  public int spd = 8;
+  public double spd = 8;
 
-  public int frames = 0;
+  private int curframes = 0;
+  private int frames = 30;
 
   public Bullet(int x, int y, int dirX,int dirY) {
     super(x,y,10,10);
@@ -19,14 +20,10 @@ public class Bullet extends Rectangle{
   }
 
   public void tick(){
-    x+=spd*dirX;
-    y+=spd*dirY;
+    x+=(int)(spd*dirX);
+    y+=(int)(spd*dirY);
     frames++;
-
-    if(Player.bullets.size()==4){
-      Player.bullets.remove(0);
-    }
-    if(frames == 60){
+    if(curframes == frames){
       Player.bullets.remove(this);
       return;
     }

@@ -26,19 +26,28 @@ public class Game extends Canvas implements Runnable, KeyListener {
   public static int WIDTH = 640, HEIGHT = 480;
   public static int SCALE = 3;
   public static Player player;
-  public World world;
+  public static World world;
   public static List<Enemy> enemies = new ArrayList<Enemy>();
   public static List<Entity> entities = new ArrayList<Entity>();
   public static Random rand = new Random();
-  public UI ui;
+  public static UI ui;
 
   public Game() {
     this.addKeyListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    NewGame();
+
+  }
+
+  public static void NewGame(){
+    entities.clear();
+    enemies.clear();
+    entities = new ArrayList<Entity>();
+    enemies = new ArrayList<Enemy>();
     new Spritesheet();
     ui = new UI();
     world = new World("/map_small.png");
-
+    return;
   }
 
   public void tick() {
@@ -84,6 +93,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
+    frame.setResizable(false);
 
     new Thread(game).start();
   }

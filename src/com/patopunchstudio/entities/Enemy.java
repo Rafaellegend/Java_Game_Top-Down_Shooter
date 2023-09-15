@@ -10,7 +10,7 @@ import com.patopunchstudio.graphics.Camera;
 import com.patopunchstudio.main.Game;
 import com.patopunchstudio.world.World;
 
-public class Enemy extends Rectangle {
+public class Enemy extends Entity {
 
   public double spd = 2;
   public double life = 2;
@@ -24,11 +24,10 @@ public class Enemy extends Rectangle {
   public boolean shoot = false;
   public static List<Bullet> bullets = new ArrayList<Bullet>();
   private BufferedImage[] sprite;
-  private int maskx, masky, mask_width,mask_height;
+  private int maskx, masky, mask_width, mask_height;
 
-  public Enemy(int x, int y,double life, double damage, double spd, BufferedImage[] sprite) {
+  public Enemy(int x, int y, double life, double damage, double spd) {
     super(x, y, 32, 32);
-    this.sprite = sprite;
     this.life = life;
     this.damage = damage;
     this.spd = spd;
@@ -38,7 +37,12 @@ public class Enemy extends Rectangle {
     this.mask_width = width;
     this.mask_height = height;
   }
-  public void setMask(int maskx,int masky,int mask_width,int mask_height){
+
+  public void setSprite(BufferedImage[] sprite) {
+    this.sprite = sprite;
+  }
+
+  public void setMask(int maskx, int masky, int mask_width, int mask_height) {
     this.maskx = maskx;
     this.masky = masky;
     this.mask_width = mask_width;
@@ -48,37 +52,36 @@ public class Enemy extends Rectangle {
   public void chasePlayer() {
     Player p = Game.player;
     if (isCollidingwithPlayer() == false) {
-      if (x < p.x && World.isFree((int) (x + spd), y) && !isColliding((int) (x + spd), y)) {
+      if (x < p.x && World.isFree((int) (getX() + spd), getY()) && !isColliding((int) (getX() + spd), getY())) {
         if (Game.rand.nextInt(100) < 50)
           x += spd;
-      } else if (x > p.x && World.isFree((int) (x - spd), y) && !isColliding((int) (x - spd), y)) {
+      } else if (x > p.x && World.isFree((int) (getX() - spd), getY()) && !isColliding((int) (getX() - spd), getY())) {
         if (Game.rand.nextInt(100) < 50)
           x -= spd;
       }
-      if (y < p.y && World.isFree(x, (int) (y + spd)) && !isColliding(x, (int) (y + spd))) {
+      if (y < p.y && World.isFree(getX(), (int) (getY() + spd)) && !isColliding(getX(), (int) (getY() + spd))) {
         if (Game.rand.nextInt(100) < 50)
           y += spd;
-      } else if (y > p.y && World.isFree(x, (int) (y - spd)) && !isColliding(x, (int) (y - spd))) {
+      } else if (y > p.y && World.isFree(getX(), (int) (getY() - spd)) && !isColliding(getX(), (int) (getY() - spd))) {
         if (Game.rand.nextInt(100) < 50)
           y -= spd;
-      } 
-    }else{
-        //Colisão com Player
-        if(Game.rand.nextInt(100) < 10 && !Game.player.isDamaged){
-          if(Game.rand.nextInt(100) < 10){
-            Game.player.life -= (int)(damage*2);
-            Game.player.isDamaged = true;
-            //System.out.println("DANO CRITICO!");
-          }else{
-            Game.player.life -= (int)(damage);
-            Game.player.isDamaged = true;
-          }
-          
-          //System.out.println("Life: "+ Game.player.life);
-        }
-        
-
       }
+    } else {
+      // Colisão com Player
+      if (Game.rand.nextInt(100) < 10 && !Game.player.isDamaged) {
+        if (Game.rand.nextInt(100) < 10) {
+          Game.player.life -= (int) (damage * 2);
+          Game.player.isDamaged = true;
+          // System.out.println("DANO CRITICO!");
+        } else {
+          Game.player.life -= (int) (damage);
+          Game.player.isDamaged = true;
+        }
+
+        // System.out.println("Life: "+ Game.player.life);
+      }
+
+    }
   }
 
   public void tick() {
@@ -97,7 +100,7 @@ public class Enemy extends Rectangle {
     }
     if (shoot) {
       shoot = false;
-      bullets.add(new Bullet(x, y, dirX, dirY));
+      bullets.add(new Bullet(getX(), getY(), dirX, dirY));
     }
     for (int i = 0; i < bullets.size(); i++) {
       bullets.get(i).tick();
@@ -110,7 +113,7 @@ public class Enemy extends Rectangle {
       Enemy e = Game.enemies.get(i);
       if (e == this)
         continue;
-      Rectangle targetEnemy = new Rectangle(e.x, e.y, World.tile_Size, World.tile_Size);
+      Rectangle targetEnemy = new Rectangle(e.getX(), e.getY(), World.tile_Size, World.tile_Size);
       if (enemyCollider.intersects(targetEnemy)) {
         return true;
       }
@@ -119,14 +122,14 @@ public class Enemy extends Rectangle {
   }
 
   public boolean isCollidingwithPlayer() {
-    Rectangle enemyCollider = new Rectangle(x + maskx, y + masky, mask_width, mask_height);
+    Rectangle enemyCollider = new Rectangle(getX() + maskx, getY() + masky, mask_width, mask_height);
     Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 32, 32);
 
     return enemyCollider.intersects(player);
   }
 
   public void render(Graphics g) {
-    g.drawImage(sprite[curAnimation], x - Camera.X, y - Camera.Y, 32, 32, null);
+    g.drawImage(sprite[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
     for (int i = 0; i < bullets.size(); i++) {
       bullets.get(i).render(g);
     }

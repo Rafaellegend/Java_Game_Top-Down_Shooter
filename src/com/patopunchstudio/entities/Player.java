@@ -21,9 +21,14 @@ public class Player extends Entity {
   public double mana = 50;
   public int maxlife = 100;
   public int maxmana = 100;
+  public double manaRegen = 5;
+  public int manaFrame = 0;
   public double invencibilityFrame = 15;
-  public boolean right, up, down, left;
+  public boolean right, up, down, left, wpm;
   public boolean isDamaged = false;
+  public double atkSpeed = 0.5;
+  public int atkCooldown = 0;
+  public boolean atkInCooldown = false;
   public int damageFrame = 0;
   public int actualSprite = 0;
   public int dirX = 0;
@@ -35,8 +40,8 @@ public class Player extends Entity {
 
   public void tick() {
     if (life <= 0) {
-      life=0;
-      // System.exit(1);
+      life = 0;
+      Game.NewGame();
     }
 
     boolean moved = false;
@@ -86,7 +91,28 @@ public class Player extends Entity {
     }
     if (shoot) {
       shoot = false;
-      bullets.add(new Bullet(getX(), getY(), dirX, dirY));
+      if (wpm && mana > 0) {
+        if (!atkInCooldown) {
+          mana--;
+          atkInCooldown = true;
+          if (right || dirX == 1) {
+            bullets.add(new Bullet(getX() + 12, getY(), dirX, dirY));
+          } else if (left || dirX == -1) {
+            bullets.add(new Bullet(getX(), getY(), dirX, dirY));
+          } else if (up || dirY == -1) {
+            bullets.add(new Bullet(getX() + 16, getY() + 12, dirX, dirY));
+          } else if (down || dirY == 1) {
+            bullets.add(new Bullet(getX(), getY() - 12, dirX, dirY));
+          }
+        }else{
+          atkCooldown++;
+          if(atkCooldown == atkSpeed){
+            atkCooldown=0;
+            atkInCooldown = false;
+          }
+        }
+      }
+
     }
     for (int i = 0; i < bullets.size(); i++) {
       bullets.get(i).tick();
@@ -96,7 +122,15 @@ public class Player extends Entity {
       this.damageFrame++;
       if (damageFrame == invencibilityFrame) {
         this.damageFrame = 0;
-        isDamaged=false;
+        isDamaged = false;
+      }
+    }
+
+    if (mana < maxmana) {
+      this.manaFrame++;
+      if (manaFrame == (int) (100 - manaRegen)) {
+        mana++;
+        this.manaFrame = 0;
       }
     }
 
@@ -130,6 +164,12 @@ public class Player extends Entity {
         }
       }
       //
+      if (actual instanceof Weapon) {
+        if (Entity.isColliding(this, actual)) {
+          wpm = true;
+          Game.entities.remove(actual);
+        }
+      }
     }
   }
 
@@ -137,16 +177,32 @@ public class Player extends Entity {
     if (!isDamaged) {
       if (down || actualSprite == 0) {
         g.drawImage(Spritesheet.player_front[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
+        if (wpm) {
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 10, getY() - Camera.Y, 32, 32, null);
+        }
       } else if (up || actualSprite == 1) {
+        if (wpm) {
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y, 32, 32, null);
+        }
         g.drawImage(Spritesheet.player_back[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
+
       } else if (right || actualSprite == 2) {
+        if (wpm) {
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y, 32, 32, null);
+        }
         g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
       } else if (left || actualSprite == 3) {
         g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() + 32 - Camera.X, getY() - Camera.Y, -32, 32,
             null);
+        if (wpm) {
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 5, getY() - Camera.Y, 32, 32, null);
+        }
       }
     } else {
       g.drawImage(Spritesheet.player_damaged, this.getX() - Camera.X, this.getY() - Camera.Y, 32, 32, null);
+      if (wpm) {
+        g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 13, getY() - Camera.Y - 13, 32, 32, null);
+      }
     }
     for (int i = 0; i < bullets.size(); i++) {
       bullets.get(i).render(g);
