@@ -14,6 +14,7 @@ public class Spritesheet {
   public static BufferedImage player_damaged;
   public static BufferedImage[] enemy_green;
   public static BufferedImage[] enemy_red;
+  public static BufferedImage goblin_damaged;
   public static BufferedImage tileWall;
   public static BufferedImage magicBullet;
   public static BufferedImage lifeGem_EN;
@@ -46,6 +47,8 @@ public class Spritesheet {
     enemy_red= new BufferedImage[2];
     enemy_red[0] = Spritesheet.getSprite(0, 32, 16, 16);
     enemy_red[1] = Spritesheet.getSprite(16, 32, 16, 16);
+
+    goblin_damaged = Spritesheet.getSprite(32, 16, 16, 16);
 
     magicBullet = Spritesheet.getSprite(100, 4, 8, 8);
 

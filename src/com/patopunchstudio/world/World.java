@@ -68,6 +68,7 @@ public class World {
             tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 32, yy * 32, Tile.Tile_Floor2);
             Weapon wpm = new Weapon(xx * 32, yy * 32, 32, 32);
             wpm.setSprite(Spritesheet.fireWand_EN);
+            wpm.setWeaponStatus(2,0,0, 5, 8, 1);
             Game.entities.add(wpm);
           } else if (pixelAtual == 0xFF00ff00) {
             // Life Gem - Green Pixel

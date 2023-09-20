@@ -57,6 +57,10 @@ public class Entity {
     return (int) this.height;
   }
 
+  public BufferedImage getSprite() {
+    return this.sprite;
+  }
+
   public void tick() {
 
   }

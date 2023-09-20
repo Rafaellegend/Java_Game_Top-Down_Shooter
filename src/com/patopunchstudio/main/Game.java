@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import com.patopunchstudio.entities.Bullet;
 import com.patopunchstudio.entities.Enemy;
 import com.patopunchstudio.entities.Entity;
 import com.patopunchstudio.entities.Player;
@@ -21,7 +24,7 @@ import com.patopunchstudio.graphics.Spritesheet;
 import com.patopunchstudio.graphics.UI;
 import com.patopunchstudio.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener {
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
 
   public static int WIDTH = 640, HEIGHT = 480;
   public static int SCALE = 3;
@@ -29,11 +32,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
   public static World world;
   public static List<Enemy> enemies = new ArrayList<Enemy>();
   public static List<Entity> entities = new ArrayList<Entity>();
+  
+  public static List<Bullet> bullets = new ArrayList<Bullet>();
   public static Random rand = new Random();
   public static UI ui;
 
   public Game() {
     this.addKeyListener(this);
+    this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     NewGame();
 
@@ -175,4 +181,28 @@ public class Game extends Canvas implements Runnable, KeyListener {
     }
   }
 
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+    player.shoot = true;
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+    throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+    throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+    throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+  }
 }
