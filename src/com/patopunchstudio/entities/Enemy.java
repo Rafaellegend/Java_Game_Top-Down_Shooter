@@ -74,11 +74,11 @@ public class Enemy extends Entity {
       // Colisão com Player
       if (Game.rand.nextInt(100) < 10 && !Game.player.isDamaged) {
         if (Game.rand.nextInt(100) < 10) {
-          //Game.player.life -= (int) (damage * 2);
+          Game.player.life -= (int) (damage * 2);
           Game.player.isDamaged = true;
           // System.out.println("DANO CRITICO!");
         } else {
-          //Game.player.life -= (int) (damage);
+          Game.player.life -= (int) (damage);
           Game.player.isDamaged = true;
         }
 
@@ -116,7 +116,7 @@ public class Enemy extends Entity {
         this.damageFrame = 0;
         destroySelf();
       }
-      
+
     }
     if (shoot) {
       shoot = false;
@@ -168,7 +168,14 @@ public class Enemy extends Entity {
       if (e instanceof Bullet) {
         if (Entity.isColliding(this, e)) {
           isDamaged = true;
-          life -= Game.player.equiped.damage;
+          if (Game.rand.nextInt(100) <= Game.player.equiped.critChance) {
+            double crit = Game.player.equiped.damage * Game.player.equiped.critDamage;
+            life -= Game.player.equiped.damage +crit;
+            System.out.println("Critou no inimigo causando"+Game.player.equiped.damage +crit);
+          }else{
+            life -= Game.player.equiped.damage;
+          }
+
           Game.bullets.remove(i);
           return true;
         }

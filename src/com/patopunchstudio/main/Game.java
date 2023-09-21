@@ -32,6 +32,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static World world;
   public static List<Enemy> enemies = new ArrayList<Enemy>();
   public static List<Entity> entities = new ArrayList<Entity>();
+  public static int current_Level =1;
+  public static int max_Level = 3;
   
   public static List<Bullet> bullets = new ArrayList<Bullet>();
   public static Random rand = new Random();
@@ -41,18 +43,18 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-    NewGame();
+    NewGame("map_"+current_Level+".png");
 
   }
 
-  public static void NewGame(){
+  public static void NewGame(String map){
     entities.clear();
     enemies.clear();
     entities = new ArrayList<Entity>();
     enemies = new ArrayList<Enemy>();
     new Spritesheet();
     ui = new UI();
-    world = new World("/map_small.png");
+    world = new World("/"+map);
     return;
   }
 
@@ -61,6 +63,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     for (int i = 0; i < enemies.size(); i++) {
       enemies.get(i).tick();
+    }
+
+    if (enemies.size() ==0){
+      System.out.println("Passou de Fase");
+      current_Level++;
+      if(current_Level > max_Level){
+        current_Level = 1;
+      }
+      String newWorld = "map_"+current_Level+".png";
+      NewGame(newWorld);
     }
   }
 
@@ -147,7 +159,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
   @Override
   public void keyTyped(KeyEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
   }
 
   @Override
@@ -183,26 +194,24 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
   }
 
   @Override
   public void mousePressed(MouseEvent e) {
-    player.shoot = true;
+    player.mouseShoot = true;
+    player.mX = e.getX();
+    player.mY = e.getY();
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
   }
 
   @Override
   public void mouseEntered(MouseEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
   }
 
   @Override
   public void mouseExited(MouseEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
   }
 }

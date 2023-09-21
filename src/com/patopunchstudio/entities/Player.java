@@ -30,15 +30,16 @@ public class Player extends Entity {
   public int damageFrame = 0;
   public int actualSprite = 0;
   public int dirX = 0, dirY = 0;
+  public int mX = 0, mY = 0;
   public int curAnimation = 0;
   public int curFrames = 0, targetFrames = 15;
-  public boolean shoot = false;
+  public boolean shoot = false, mouseShoot = false;
   public Weapon equiped;
 
   public void tick() {
     if (life <= 0) {
       life = 0;
-      Game.NewGame();
+      Game.NewGame("map_"+Game.current_Level+".png");
     }
 
     boolean moved = false;
@@ -86,6 +87,7 @@ public class Player extends Entity {
         }
       }
     }
+    //tiro com Teclado
     if (shoot) {
       shoot = false;
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
@@ -110,6 +112,35 @@ public class Player extends Entity {
         }
       }
     }
+    //tiro com o Mouse
+    if (mouseShoot) {
+      mouseShoot = false;
+      double angle = Math.atan2(mY - (this.getY()+8 - Camera.Y), mX - (this.getX()+8 - Camera.Y));
+      if (wpm && mana > 0 && mana > equiped.manaConsumption) {
+        double dx =  Math.cos(angle);
+        double dy =  Math.sin(angle);
+        if (!atkInCooldown) {
+          mana -= equiped.manaConsumption;
+          if (right || dirX == 1) {
+            Game.bullets.add(new Bullet(getX() + 12, getY(), dx, dy, equiped));
+          } else if (left || dirX == -1) {
+            Game.bullets.add(new Bullet(getX(), getY(), dx, dy, equiped));
+          } else if (up || dirY == -1) {
+            Game.bullets.add(new Bullet(getX() + 16, getY() + 12, dx, dy, equiped));
+          } else if (down || dirY == 1) {
+            Game.bullets.add(new Bullet(getX(), getY() - 12, dx, dy, equiped));
+          }
+          atkInCooldown = true;
+        } else {
+          atkCooldown++;
+          if (atkCooldown >= atkSpeed) {
+            atkCooldown = 0;
+            atkInCooldown = false;
+          }
+        }
+      }
+    }
+
     for (int i = 0; i < Game.bullets.size(); i++) {
       Game.bullets.get(i).tick();
     }
