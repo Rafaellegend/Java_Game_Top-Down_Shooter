@@ -39,7 +39,8 @@ public class Player extends Entity {
   public void tick() {
     if (life <= 0) {
       life = 0;
-      Game.NewGame("map_"+Game.current_Level+".png");
+      Game.gameState = "GAMEOVER";
+      //Game.NewGame("map_"+Game.current_Level+".png");
     }
 
     boolean moved = false;

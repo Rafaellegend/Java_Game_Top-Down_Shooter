@@ -1,10 +1,10 @@
 package com.patopunchstudio.main;
 
-
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -32,48 +32,71 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static World world;
   public static List<Enemy> enemies = new ArrayList<Enemy>();
   public static List<Entity> entities = new ArrayList<Entity>();
-  public static int current_Level =1;
+  public static int current_Level = 1;
   public static int max_Level = 3;
-  
+
   public static List<Bullet> bullets = new ArrayList<Bullet>();
   public static Random rand = new Random();
   public static UI ui;
+  public static String gameState = "NORMAL";
+
+  private boolean restartGame = false;
 
   public Game() {
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-    NewGame("map_"+current_Level+".png");
+    NewGame("map_" + current_Level + ".png");
 
   }
 
-  public static void NewGame(String map){
+  public static void NewGame(String map) {
     entities.clear();
     enemies.clear();
     entities = new ArrayList<Entity>();
     enemies = new ArrayList<Enemy>();
     new Spritesheet();
     ui = new UI();
-    world = new World("/"+map);
+    world = new World("/" + map);
     return;
   }
 
   public void tick() {
-    player.tick();
-
-    for (int i = 0; i < enemies.size(); i++) {
-      enemies.get(i).tick();
-    }
-
-    if (enemies.size() ==0){
-      System.out.println("Passou de Fase");
-      current_Level++;
-      if(current_Level > max_Level){
-        current_Level = 1;
+    if (gameState == "NORMAL") {
+      player.tick();
+      for (int i = 0; i < enemies.size(); i++) {
+        enemies.get(i).tick();
       }
-      String newWorld = "map_"+current_Level+".png";
-      NewGame(newWorld);
+
+      if (enemies.size() == 0) {
+        System.out.println("Passou de Fase");
+        current_Level++;
+        if (current_Level > max_Level) {
+          current_Level = 1;
+        }
+        String newWorld = "map_" + current_Level + ".png";
+        NewGame(newWorld);
+      }
+    } else if (gameState == "GAMEOVER") {
+      // System.out.println("Game Over!");
+      Game.ui.frames++;
+      if (Game.ui.frames == 40) {
+        Game.ui.frames = 0;
+        if (Game.ui.showMessageGameOver) {
+          Game.ui.showMessageGameOver = false;
+        } else {
+          Game.ui.showMessageGameOver = true;
+        }
+      }
+      if (restartGame) {
+        this.restartGame =false;
+        gameState = "NORMAL";
+        current_Level = 1;
+        String newWorld = "map_" + current_Level + ".png";
+        NewGame(newWorld);
+      }
     }
+
   }
 
   public void render() {
@@ -87,7 +110,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     Graphics g = bs.getDrawGraphics();
 
     g.setColor(Color.BLACK);
-    g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+    g.fillRect(0, 0, WIDTH, HEIGHT);
     world.render(g);
     player.render(g);
 
@@ -98,6 +121,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       entities.get(i).render(g);
     }
     ui.render(g);
+
     bs.show();
   }
 
@@ -131,7 +155,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     double amountofTicks = 60.0;
     double ns = 1000000000 / amountofTicks;
     double delta = 0;
-    int frames =0;
+    int frames = 0;
     double timer = System.currentTimeMillis();
     while (true) {
       long now = System.nanoTime();
@@ -144,15 +168,15 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         delta--;
       }
 
-      if(System.currentTimeMillis() - timer >= 1000){
+      if (System.currentTimeMillis() - timer >= 1000) {
         System.out.println("FPS: " + frames);
-        frames =0;
-        timer +=1000;
+        frames = 0;
+        timer += 1000;
       }
       // try {
-      //   Thread.sleep(1000 / 60);
+      // Thread.sleep(1000 / 60);
       // } catch (InterruptedException e) {
-      //   e.printStackTrace();
+      // e.printStackTrace();
       // }
     }
   }
@@ -176,6 +200,12 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     if (e.getKeyCode() == KeyEvent.VK_J) {
       player.shoot = true;
     }
+    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+      if (gameState == "GAMEOVER") {
+        restartGame = true;
+      }
+    }
+
   }
 
   @Override
