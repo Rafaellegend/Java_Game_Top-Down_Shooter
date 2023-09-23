@@ -65,8 +65,9 @@ public class UI {
       posV = (Game.HEIGHT / 2) + 40;
       g.setColor(Color.WHITE);
 
-      if (this.showMessageGameOver == true){
-        g.drawString(text, posH, posV);}
+      if (this.showMessageGameOver == true) {
+        g.drawString(text, posH, posV);
+      }
 
     }
   }

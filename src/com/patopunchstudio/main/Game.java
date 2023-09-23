@@ -38,8 +38,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static List<Bullet> bullets = new ArrayList<Bullet>();
   public static Random rand = new Random();
   public static UI ui;
-  public static String gameState = "NORMAL";
-
+  public static String gameState = "MENU";
+  public static Menu menu;
   private boolean restartGame = false;
 
   public Game() {
@@ -53,11 +53,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static void NewGame(String map) {
     entities.clear();
     enemies.clear();
+    bullets.clear();
     entities = new ArrayList<Entity>();
     enemies = new ArrayList<Enemy>();
+    bullets = new ArrayList<Bullet>();
     new Spritesheet();
     ui = new UI();
     world = new World("/" + map);
+    menu = new Menu();
     return;
   }
 
@@ -89,12 +92,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
       }
       if (restartGame) {
-        this.restartGame =false;
+        this.restartGame = false;
         gameState = "NORMAL";
         current_Level = 1;
         String newWorld = "map_" + current_Level + ".png";
         NewGame(newWorld);
       }
+    } else if (gameState == "MENU") {
+      menu.tick();
     }
 
   }
@@ -121,7 +126,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       entities.get(i).render(g);
     }
     ui.render(g);
-
+    if(gameState == "MENU"){
+      menu.render(g);
+    }
     bs.show();
   }
 
@@ -194,8 +201,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
     if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
       player.up = true;
+      if(gameState == "MENU"){
+        menu.up = true;
+        System.out.println(menu.currentOption);
+      }
     } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
       player.down = true;
+      if(gameState == "MENU"){
+        menu.down = true;
+        System.out.println(menu.currentOption);
+      }
     }
     if (e.getKeyCode() == KeyEvent.VK_J) {
       player.shoot = true;
@@ -203,6 +218,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
       if (gameState == "GAMEOVER") {
         restartGame = true;
+      }
+      if(gameState == "MENU"){
+        menu.execute = true;
       }
     }
 

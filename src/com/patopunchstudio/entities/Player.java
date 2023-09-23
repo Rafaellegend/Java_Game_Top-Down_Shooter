@@ -16,10 +16,10 @@ public class Player extends Entity {
 
   public double spd = 4;
   public double life = 100;
-  public double mana = 50;
+  public double mana = 100;
   public int maxlife = 100;
   public int maxmana = 100;
-  public double manaRegen = 1;
+  public double manaRegen = 5;
   public int manaFrame = 0;
   public double invencibilityFrame = 15;
   public boolean right, up, down, left, wpm;
@@ -95,13 +95,13 @@ public class Player extends Entity {
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
           if (right || dirX == 1) {
-            Game.bullets.add(new Bullet(getX() + 12, getY(), dirX, dirY, equiped));
+            Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dirX, dirY, equiped));
           } else if (left || dirX == -1) {
-            Game.bullets.add(new Bullet(getX(), getY(), dirX, dirY, equiped));
+            Game.bullets.add(new Bullet(this.getX(), this.getY(), dirX, dirY, equiped));
           } else if (up || dirY == -1) {
-            Game.bullets.add(new Bullet(getX() + 16, getY() + 12, dirX, dirY, equiped));
+            Game.bullets.add(new Bullet(this.getX() + 16, this.getY() + 12, dirX, dirY, equiped));
           } else if (down || dirY == 1) {
-            Game.bullets.add(new Bullet(getX(), getY() - 12, dirX, dirY, equiped));
+            Game.bullets.add(new Bullet(this.getX(), this.getY() - 12, dirX, dirY, equiped));
           }
           atkInCooldown = true;
         } else {
@@ -116,20 +116,20 @@ public class Player extends Entity {
     //tiro com o Mouse
     if (mouseShoot) {
       mouseShoot = false;
-      double angle = Math.atan2(mY - (this.getY()+8 - Camera.Y), mX - (this.getX()+8 - Camera.Y));
+      double angle = Math.atan2(mY - (this.getY()+8 - Camera.Y), mX - (this.getX()+8 - Camera.X ));
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
         double dx =  Math.cos(angle);
         double dy =  Math.sin(angle);
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
           if (right || dirX == 1) {
-            Game.bullets.add(new Bullet(getX() + 12, getY(), dx, dy, equiped));
+            Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dx, dy, equiped));
           } else if (left || dirX == -1) {
-            Game.bullets.add(new Bullet(getX(), getY(), dx, dy, equiped));
+            Game.bullets.add(new Bullet(this.getX(), this.getY(), dx, dy, equiped));
           } else if (up || dirY == -1) {
-            Game.bullets.add(new Bullet(getX() + 16, getY() + 12, dx, dy, equiped));
+            Game.bullets.add(new Bullet(this.getX() + 16, this.getY() + 12, dx, dy, equiped));
           } else if (down || dirY == 1) {
-            Game.bullets.add(new Bullet(getX(), getY() - 12, dx, dy, equiped));
+            Game.bullets.add(new Bullet(this.getX(), this.getY() - 12, dx, dy, equiped));
           }
           atkInCooldown = true;
         } else {

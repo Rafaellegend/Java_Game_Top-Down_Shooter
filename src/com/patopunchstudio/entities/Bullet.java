@@ -2,6 +2,7 @@ package com.patopunchstudio.entities;
 
 import java.awt.Graphics;
 
+import com.patopunchstudio.graphics.Camera;
 import com.patopunchstudio.graphics.Spritesheet;
 import com.patopunchstudio.main.Game;
 import com.patopunchstudio.world.World;
@@ -16,7 +17,7 @@ public class Bullet extends Entity {
   private int frames = 8;
 
   public Bullet(int x, int y, double dirX, double dirY, Weapon wpm) {
-    super(x, y, 10, 10);
+    super(x, y,(int)(10*wpm.projetileSize), (int)(10*wpm.projetileSize));
     this.dirX = dirX;
     this.dirY = dirY;
     this.spd = wpm.projetileSpeed;
@@ -40,6 +41,6 @@ public class Bullet extends Entity {
   }
 
   public void render(Graphics g) {
-    g.drawImage(Spritesheet.magicBullet, (int) x, (int) y, (int) (16 * size), (int) (16 * size), null);
+    g.drawImage(Spritesheet.magicBullet, (int)(x - Camera.X), (int)(y - Camera.Y), (int) (16 * size), (int) (16 * size), null);
   }
 }
