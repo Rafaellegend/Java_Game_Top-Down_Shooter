@@ -41,9 +41,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static String gameState = "MENU";
   public static Menu menu;
   public static Pause pause;
+  public static Sound sound;
   private boolean restartGame = false;
 
   public Game() {
+    Sound.loop("res/music.wav","start");
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));

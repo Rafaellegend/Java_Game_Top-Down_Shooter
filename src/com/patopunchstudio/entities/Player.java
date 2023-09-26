@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import com.patopunchstudio.graphics.Camera;
 import com.patopunchstudio.graphics.Spritesheet;
 import com.patopunchstudio.main.Game;
+import com.patopunchstudio.main.Sound;
 import com.patopunchstudio.world.World;
 
 public class Player extends Entity {
@@ -97,6 +98,7 @@ public class Player extends Entity {
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
+          Sound.play("res/shoot.wav","start");
           if (right || dirX == 1) {
             Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dirX, dirY, equiped));
           } else if (left || dirX == -1) {
@@ -125,6 +127,7 @@ public class Player extends Entity {
         double dy =  Math.sin(angle);
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
+          Sound.play("res/shoot.wav","start");
           if (right || dirX == 1) {
             Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dx, dy, equiped));
           } else if (left || dirX == -1) {

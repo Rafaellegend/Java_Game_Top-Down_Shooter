@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.patopunchstudio.graphics.Camera;
 import com.patopunchstudio.main.Game;
+import com.patopunchstudio.main.Sound;
 import com.patopunchstudio.world.World;
 
 public class Enemy extends Entity {
@@ -73,6 +74,7 @@ public class Enemy extends Entity {
     } else {
       // Colisão com Player
       if (Game.rand.nextInt(100) < 10 && !Game.player.isDamaged) {
+        Sound.play("res/hit.wav","start");
         if (Game.rand.nextInt(100) < 10) {
           Game.player.life -= (int) (damage * 2);
           Game.player.isDamaged = true;
@@ -168,11 +170,12 @@ public class Enemy extends Entity {
       if (e instanceof Bullet) {
         if (Entity.isColliding(this, e)) {
           isDamaged = true;
+          Sound.play("res/hit.wav","start");
           if (Game.rand.nextInt(100) <= Game.player.equiped.critChance) {
             double crit = Game.player.equiped.damage * Game.player.equiped.critDamage;
-            life -= Game.player.equiped.damage +crit;
-            System.out.println("Critou no inimigo causando"+Game.player.equiped.damage +crit);
-          }else{
+            life -= Game.player.equiped.damage + crit;
+            System.out.println("Critou no inimigo causando" + Game.player.equiped.damage + crit);
+          } else {
             life -= Game.player.equiped.damage;
           }
 
