@@ -16,6 +16,19 @@ public class Menu {
   public boolean up, down, execute;
 
   public void tick() {
+    if (execute) {
+      if (currentOption == 0) {
+        Game.gameState = "NORMAL";
+        Game.current_Level = 1;
+        String newWorld = "map_" + Game.current_Level + ".png";
+        Game.NewGame(newWorld);
+      }
+      if(currentOption == 2){
+        System.exit(1);
+      }
+      execute = false;
+    }
+
     if (up) {
       currentOption--;
       if (currentOption < 0)
@@ -28,37 +41,17 @@ public class Menu {
         currentOption = 0;
       down = false;
     }
-    if (execute) {
-      if (currentOption == 0) {
-        Game.gameState = "NORMAL";
-        Game.current_Level = 1;
-        String newWorld = "map_" + Game.current_Level + ".png";
-        Game.NewGame(newWorld);
-      }
-      execute=false;
-    }
   }
 
   public void render(Graphics g) {
-    g.setColor(Color.BLACK);
-    g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-
-    text = "Mage in the Maze";
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("arial", Font.BOLD, 40));
-    textWidth = g.getFontMetrics().stringWidth(text);
-    posH = (Game.WIDTH / 2) - (textWidth / 2);
-    posV = (Game.HEIGHT / 2) + 40;
-    g.drawString(text, posH, posV - 100);
-
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("arial", Font.PLAIN, 20));
-    for (int i = 0; i < options.length; i++) {
-      textWidth = g.getFontMetrics().stringWidth(text);
-      posH = (Game.WIDTH / 2) - (textWidth / 2);
-      posV = (Game.HEIGHT / 2) + 20;
-      g.drawString(options[i], posH, posV + (50 * i));
+    if (Game.gameState == "MENU") {
+      g.setColor(Color.BLACK);
+      g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+      Game.ui.stringRender(g, "Mage Dungeon", new Font("arial", Font.BOLD, 40), 0, -60, Color.WHITE);
+      for (int i = 0; i < options.length; i++) {
+        Game.ui.stringRender(g, options[i], new Font("arial", Font.PLAIN, 20), 0, (50 * i), Color.WHITE);
+      }
+      Game.ui.stringRender(g, ">", new Font("arial", Font.PLAIN, 20), -60, (50 * currentOption), Color.WHITE);
     }
-    g.drawString(">", posH - 50, posV + (50 * currentOption));
   }
 }

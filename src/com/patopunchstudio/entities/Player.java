@@ -22,7 +22,7 @@ public class Player extends Entity {
   public double manaRegen = 5;
   public int manaFrame = 0;
   public double invencibilityFrame = 15;
-  public boolean right, up, down, left, wpm;
+  public boolean right, up, down, left, wpm,pause;
   public boolean isDamaged = false;
   public double atkSpeed = 1;
   public int atkCooldown = 0;
@@ -40,9 +40,12 @@ public class Player extends Entity {
     if (life <= 0) {
       life = 0;
       Game.gameState = "GAMEOVER";
-      //Game.NewGame("map_"+Game.current_Level+".png");
     }
 
+    if(pause){
+      Game.gameState = "PAUSE";
+      pause =false;
+    }
     boolean moved = false;
     if (right && World.isFree((int) (getX() + spd), getY())) {
       actualSprite = 2;

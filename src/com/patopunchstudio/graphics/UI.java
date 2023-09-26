@@ -15,6 +15,17 @@ public class UI {
   public int frames;
   public boolean showMessageGameOver = true;
 
+
+  public void stringRender(Graphics g, String string, Font font, int marginW, int marginH, Color color) {
+    text = string;
+    g.setFont(font);
+    textWidth = g.getFontMetrics().stringWidth(text);
+    posH = (Game.WIDTH / 2) - (textWidth / 2) + marginW;
+    posV = (Game.HEIGHT / 2) + marginH;
+    g.setColor(color);
+    g.drawString(text, posH, posV);
+  }
+
   public void render(Graphics g) {
     g.setFont(new Font("arial", Font.BOLD, 13));
     // Life Bar
@@ -50,26 +61,15 @@ public class UI {
       g2.setColor(new Color(0, 0, 0, 100));
       g2.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
-      text = "Game Over";
-      g.setFont(new Font("arial", Font.BOLD, 40));
-      textWidth = g.getFontMetrics().stringWidth(text);
-      posH = (Game.WIDTH / 2) - (textWidth / 2);
-      posV = Game.HEIGHT / 2;
-      g.setColor(Color.WHITE);
-      g.drawString(text, posH, posV);
-
-      text = "Pressione 'Enter' para reiniciar";
-      g.setFont(new Font("arial", Font.BOLD, 18));
-      textWidth = g.getFontMetrics().stringWidth(text);
-      posH = (Game.WIDTH / 2) - (textWidth / 2);
-      posV = (Game.HEIGHT / 2) + 40;
-      g.setColor(Color.WHITE);
+      stringRender(g, "Game Over", new Font("arial", Font.BOLD, 40), 0, 0, Color.WHITE);
 
       if (this.showMessageGameOver == true) {
-        g.drawString(text, posH, posV);
+        stringRender(g, "Pressione 'Enter' para reiniciar", new Font("arial", Font.BOLD, 18), 0, 40, Color.WHITE);
+        stringRender(g, "Pressione 'Esc' para voltar ao menu", new Font("arial", Font.BOLD, 18), 0, 80, Color.WHITE);
       }
 
     }
+
   }
 
 }

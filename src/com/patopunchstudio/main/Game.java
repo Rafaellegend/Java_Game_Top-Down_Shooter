@@ -40,6 +40,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static UI ui;
   public static String gameState = "MENU";
   public static Menu menu;
+  public static Pause pause;
   private boolean restartGame = false;
 
   public Game() {
@@ -61,6 +62,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     ui = new UI();
     world = new World("/" + map);
     menu = new Menu();
+    pause = new Pause();
     return;
   }
 
@@ -100,6 +102,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       }
     } else if (gameState == "MENU") {
       menu.tick();
+    } else if(gameState == "PAUSE"){
+      pause.tick();
     }
 
   }
@@ -126,8 +130,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       entities.get(i).render(g);
     }
     ui.render(g);
-    if(gameState == "MENU"){
+    if (gameState == "MENU") {
       menu.render(g);
+    }
+    if(gameState == "PAUSE"){
+      pause.render(g);
     }
     bs.show();
   }
@@ -195,32 +202,54 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   @Override
   public void keyPressed(KeyEvent e) {
     if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-      player.right = true;
+      if (gameState == "NORMAL")
+        player.right = true;
     } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-      player.left = true;
+      if (gameState == "NORMAL")
+        player.left = true;
     }
     if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-      player.up = true;
-      if(gameState == "MENU"){
+      if (gameState == "NORMAL")
+        player.up = true;
+      if (gameState == "MENU")
         menu.up = true;
-        System.out.println(menu.currentOption);
-      }
+      if (gameState == "PAUSE")
+        pause.up = true;
+       
     } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-      player.down = true;
-      if(gameState == "MENU"){
+      if (gameState == "NORMAL")
+        player.down = true;
+      if (gameState == "MENU") 
         menu.down = true;
-        System.out.println(menu.currentOption);
-      }
+      if (gameState == "PAUSE") 
+        pause.down = true;
+    
     }
     if (e.getKeyCode() == KeyEvent.VK_J) {
       player.shoot = true;
     }
     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-      if (gameState == "GAMEOVER") {
+      if (gameState == "GAMEOVER")
         restartGame = true;
-      }
-      if(gameState == "MENU"){
+      if (gameState == "MENU")
         menu.execute = true;
+      if (gameState == "PAUSE")
+        pause.execute = true;
+      
+    }
+    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+      if (gameState == "GAMEOVER") {
+        gameState = "MENU";
+      }
+      if (gameState == "NORMAL") {
+        System.out.println("Pausado");
+        player.pause = true;
+      }
+      if (gameState == "MENU") {
+        System.exit(1);
+      }
+      if (gameState == "PAUSE") {
+        pause.execute = true;
       }
     }
 
