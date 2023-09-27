@@ -45,7 +45,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   private boolean restartGame = false;
 
   public Game() {
-    Sound.loop("res/music.wav","start");
+    Sound.backgroundMusic.loop();
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -80,6 +80,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         current_Level++;
         if (current_Level > max_Level) {
           current_Level = 1;
+          Sound.finish.play();
         }
         String newWorld = "map_" + current_Level + ".png";
         NewGame(newWorld);

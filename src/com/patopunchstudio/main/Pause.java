@@ -18,15 +18,14 @@ public class Pause {
   public int damage = 0, atkSpd = 0, critChance = 0, critDamage = 0;
 
   public void tick() {
-    if(Game.gameState == "PAUSE"){Sound.pause();}
+    if(Game.gameState == "PAUSE"){Sound.backgroundMusic.pause();}
     if (execute) {
       if (currentOption == 0) {
         Game.gameState = "NORMAL";
-        Sound.loop("res/music.wav", "resume");
+        Sound.backgroundMusic.resume();
       }
       if (currentOption == 1) {
         Game.gameState = "MENU";
-        Sound.loop("res/music.wav", "resume");
       }
       execute = false;
     }

@@ -98,7 +98,7 @@ public class Player extends Entity {
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
-          Sound.play("res/shoot.wav","start");
+          Sound.shoot.play();
           if (right || dirX == 1) {
             Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dirX, dirY, equiped));
           } else if (left || dirX == -1) {
@@ -127,7 +127,7 @@ public class Player extends Entity {
         double dy =  Math.sin(angle);
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
-          Sound.play("res/shoot.wav","start");
+          Sound.shoot.play();
           if (right || dirX == 1) {
             Game.bullets.add(new Bullet(this.getX() + 12, this.getY(), dx, dy, equiped));
           } else if (left || dirX == -1) {
@@ -183,6 +183,7 @@ public class Player extends Entity {
             if (life > 100)
               life = 100;
             Game.entities.remove(actual);
+            Sound.pickup.play();
           }
         }
       }
@@ -194,6 +195,7 @@ public class Player extends Entity {
             if (mana > 100)
               mana = 100;
             Game.entities.remove(actual);
+            Sound.pickup.play();
           }
         }
       }
@@ -204,6 +206,7 @@ public class Player extends Entity {
           equiped = (Weapon) actual;
           System.out.println("damage:" + equiped.damage);
           Game.entities.remove(actual);
+          Sound.pickup.play();
         }
       }
     }
