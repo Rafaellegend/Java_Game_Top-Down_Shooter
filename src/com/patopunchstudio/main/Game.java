@@ -4,7 +4,6 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -105,7 +104,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       }
     } else if (gameState == "MENU") {
       menu.tick();
-    } else if(gameState == "PAUSE"){
+    } else if (gameState == "PAUSE") {
       pause.tick();
     }
 
@@ -136,7 +135,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     if (gameState == "MENU") {
       menu.render(g);
     }
-    if(gameState == "PAUSE"){
+    if (gameState == "PAUSE") {
       pause.render(g);
     }
     bs.show();
@@ -218,15 +217,15 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         menu.up = true;
       if (gameState == "PAUSE")
         pause.up = true;
-       
+
     } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
       if (gameState == "NORMAL")
         player.down = true;
-      if (gameState == "MENU") 
+      if (gameState == "MENU")
         menu.down = true;
-      if (gameState == "PAUSE") 
+      if (gameState == "PAUSE")
         pause.down = true;
-    
+
     }
     if (e.getKeyCode() == KeyEvent.VK_J) {
       player.shoot = true;
@@ -238,7 +237,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         menu.execute = true;
       if (gameState == "PAUSE")
         pause.execute = true;
-      
+
     }
     if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
       if (gameState == "GAMEOVER") {
@@ -253,6 +252,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
       }
       if (gameState == "PAUSE") {
         pause.execute = true;
+      }
+    }
+    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+      if (gameState == "NORMAL") {
+          player.jump = true;
       }
     }
 

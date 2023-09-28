@@ -160,7 +160,6 @@ public class Enemy extends Entity {
   public boolean isCollidingwithPlayer() {
     Rectangle enemyCollider = new Rectangle(getX() + maskx, getY() + masky, mask_width, mask_height);
     Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 32, 32);
-
     return enemyCollider.intersects(player);
   }
 

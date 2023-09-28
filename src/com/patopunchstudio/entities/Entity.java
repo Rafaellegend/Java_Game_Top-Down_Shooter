@@ -2,7 +2,6 @@ package com.patopunchstudio.entities;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import com.patopunchstudio.graphics.Camera;
@@ -11,6 +10,7 @@ public class Entity {
 
   protected double x;
   protected double y;
+  protected int z;
   protected int width;
   protected int height;
 
@@ -70,8 +70,11 @@ public class Entity {
         e1.mask_height);
     Rectangle e2mask = new Rectangle((int) e2.getX() + e2.maskx, (int) e2.getY() + e2.masky, e2.mask_width,
         e2.mask_height);
-
-    return e1mask.intersects(e2mask);
+    if(e1mask.intersects(e2mask) && e1.z == e2.z) {
+      System.out.println(e1.z+" - "+e2.z);
+      return true;
+    }        
+    return false;
   }
 
   public void render(Graphics g) {

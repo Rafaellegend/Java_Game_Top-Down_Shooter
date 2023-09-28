@@ -23,7 +23,9 @@ public class Player extends Entity {
   public double manaRegen = 5;
   public int manaFrame = 0;
   public double invencibilityFrame = 15;
-  public boolean right, up, down, left, wpm,pause;
+  public boolean right, up, down, left, wpm, pause;
+  public boolean jump = false, isJumping = false, jumpUp = false, jumpDown = false;
+  public int jumpHeight = 60, jumpCur = 0,jumpSpd=5;
   public boolean isDamaged = false;
   public double atkSpeed = 1;
   public int atkCooldown = 0;
@@ -31,6 +33,7 @@ public class Player extends Entity {
   public int damageFrame = 0;
   public int actualSprite = 0;
   public int dirX = 0, dirY = 0;
+  public int z =0;
   public int mX = 0, mY = 0;
   public int curAnimation = 0;
   public int curFrames = 0, targetFrames = 15;
@@ -43,9 +46,9 @@ public class Player extends Entity {
       Game.gameState = "GAMEOVER";
     }
 
-    if(pause){
+    if (pause) {
       Game.gameState = "PAUSE";
-      pause =false;
+      pause = false;
     }
     boolean moved = false;
     if (right && World.isFree((int) (getX() + spd), getY())) {
@@ -92,7 +95,7 @@ public class Player extends Entity {
         }
       }
     }
-    //tiro com Teclado
+    // tiro com Teclado
     if (shoot) {
       shoot = false;
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
@@ -118,13 +121,13 @@ public class Player extends Entity {
         }
       }
     }
-    //tiro com o Mouse
+    // tiro com o Mouse
     if (mouseShoot) {
       mouseShoot = false;
-      double angle = Math.atan2(mY - (this.getY()+8 - Camera.Y), mX - (this.getX()+8 - Camera.X ));
+      double angle = Math.atan2(mY - (this.getY() + 8 - Camera.Y), mX - (this.getX() + 8 - Camera.X));
       if (wpm && mana > 0 && mana > equiped.manaConsumption) {
-        double dx =  Math.cos(angle);
-        double dy =  Math.sin(angle);
+        double dx = Math.cos(angle);
+        double dy = Math.sin(angle);
         if (!atkInCooldown) {
           mana -= equiped.manaConsumption;
           Sound.shoot.play();
@@ -168,8 +171,38 @@ public class Player extends Entity {
       }
     }
 
+    Jump();
+
     Camera.X = Camera.clamp(getX() - (Game.WIDTH / 2), 0, World.WIDTH * 32 - Game.WIDTH);
     Camera.Y = Camera.clamp(getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 32 - Game.HEIGHT);
+  }
+
+  public void Jump() {
+    if (jump) {
+      if (isJumping == false) {
+        jump = false;
+        isJumping = true;
+        jumpUp = true;
+      }
+    }
+    if (isJumping) {
+        if (jumpUp) {
+          jumpCur+=jumpSpd;
+        }
+        if(jumpDown){
+          jumpCur-=jumpSpd;
+          if(jumpCur <= 0){
+            isJumping =false;
+            jumpDown= false;
+            jumpUp =false;
+          }
+        }
+        z = jumpCur;
+        if (jumpCur >= jumpHeight) {
+          jumpUp= false;
+          jumpDown = true;
+        }
+    }
   }
 
   public void checkItems() {
@@ -215,32 +248,34 @@ public class Player extends Entity {
   public void render(Graphics g) {
     if (!isDamaged) {
       if (down || actualSprite == 0) {
-        g.drawImage(Spritesheet.player_front[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
+        g.drawImage(Spritesheet.player_front[curAnimation], getX() - Camera.X, getY() - Camera.Y - z, 32, 32, null);
         if (wpm) {
-          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 10, getY() - Camera.Y, 32, 32, null);
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 10, getY() - Camera.Y - z, 32, 32, null);
         }
       } else if (up || actualSprite == 1) {
         if (wpm) {
-          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y, 32, 32, null);
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y - z, 32, 32, null);
         }
-        g.drawImage(Spritesheet.player_back[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
+        g.drawImage(Spritesheet.player_back[curAnimation], getX() - Camera.X, getY() - Camera.Y - z, 32, 32, null);
 
       } else if (right || actualSprite == 2) {
         if (wpm) {
-          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y, 32, 32, null);
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X + 10, getY() - Camera.Y - z, 32, 32, null);
         }
-        g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() - Camera.X, getY() - Camera.Y, 32, 32, null);
+        g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() - Camera.X, getY() - Camera.Y - z, 32, 32,
+            null);
       } else if (left || actualSprite == 3) {
-        g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() + 32 - Camera.X, getY() - Camera.Y, -32, 32,
+        g.drawImage(Spritesheet.player_horizontal[curAnimation], getX() + 32 - Camera.X, getY() - Camera.Y - z, -32,
+            32,
             null);
         if (wpm) {
-          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 5, getY() - Camera.Y, 32, 32, null);
+          g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 5, getY() - Camera.Y - z, 32, 32, null);
         }
       }
     } else {
-      g.drawImage(Spritesheet.player_damaged, this.getX() - Camera.X, this.getY() - Camera.Y, 32, 32, null);
+      g.drawImage(Spritesheet.player_damaged, this.getX() - Camera.X, this.getY() - Camera.Y - z, 32, 32, null);
       if (wpm) {
-        g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 13, getY() - Camera.Y - 13, 32, 32, null);
+        g.drawImage(Spritesheet.fireWand_EN, getX() - Camera.X - 13, getY() - Camera.Y - 13 - z, 32, 32, null);
       }
     }
     for (int i = 0; i < Game.bullets.size(); i++) {
