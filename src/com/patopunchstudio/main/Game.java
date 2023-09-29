@@ -42,6 +42,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static Pause pause;
   public static Sound sound;
   private boolean restartGame = false;
+  private boolean saveGame = false;
 
   public Game() {
     Sound.backgroundMusic.loop();
@@ -49,7 +50,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     NewGame("map_" + current_Level + ".png");
-
   }
 
   public static void NewGame(String map) {
@@ -69,6 +69,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
   public void tick() {
     if (gameState == "NORMAL") {
+      if (this.saveGame) {
+        this.saveGame = false;
+        String[] opt1 = { "level" };
+        int[] opt2 = { current_Level };
+        Menu.saveGame(opt1, opt2, 10);
+        System.out.println("Salvado com sucesso");
+      }
       player.tick();
       for (int i = 0; i < enemies.size(); i++) {
         enemies.get(i).tick();
@@ -256,7 +263,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
     if (e.getKeyCode() == KeyEvent.VK_SPACE) {
       if (gameState == "NORMAL") {
-          player.jump = true;
+        player.jump = true;
+      }
+    }
+
+    if (e.getKeyCode() == KeyEvent.VK_P) {
+      if (gameState == "NORMAL") {
+        this.saveGame = true;
       }
     }
 
