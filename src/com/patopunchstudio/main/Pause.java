@@ -22,7 +22,7 @@ public class Pause {
     if (execute) {
       if (currentOption == 0) {
         Game.gameState = "NORMAL";
-        Sound.backgroundMusic.resume();
+        //Sound.backgroundMusic.resume();
       }
       if (currentOption == 1) {
         Game.gameState = "MENU";

@@ -1,3 +1,3 @@
-module zelda_mini_clone {
+module topdown_shooter {
 	requires java.desktop;
 }

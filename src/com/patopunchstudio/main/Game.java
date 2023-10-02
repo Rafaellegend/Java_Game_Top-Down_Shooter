@@ -41,11 +41,21 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
   public static Menu menu;
   public static Pause pause;
   public static Sound sound;
+  // public InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("Daydream.ttf");
+  // public static Font newfont;
   private boolean restartGame = false;
   private boolean saveGame = false;
 
   public Game() {
-    Sound.backgroundMusic.loop();
+    // try {
+    //   newfont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(12f);
+    // } catch (FontFormatException e) {
+    //   e.printStackTrace();
+    // } catch (IOException e) {
+    //   e.printStackTrace();
+    // }
+
+    //Sound.backgroundMusic.loop();
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -153,7 +163,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     JFrame frame = new JFrame();
 
     frame.add(game);
-    frame.setTitle("Mini Zelda");
+    frame.setTitle("Top-Down Shooter");
     frame.pack();
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

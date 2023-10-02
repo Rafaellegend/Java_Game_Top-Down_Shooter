@@ -22,6 +22,7 @@ public class Enemy extends Entity {
   public int dirY = 0;
   public int curAnimation = 0;
   public int curFrames = 0, targetFrames = 15;
+  public int curDirFrames = 0, targetDirFrames = 30;
   public boolean shoot = false;
   public boolean isDamaged;
   public int damageFrame = 0;
@@ -56,37 +57,91 @@ public class Enemy extends Entity {
 
   public void chasePlayer() {
     Player p = Game.player;
-    if (isCollidingwithPlayer() == false) {
-      if (x < p.x && World.isFree((int) (getX() + spd), getY()) && !isColliding((int) (getX() + spd), getY())) {
-        if (Game.rand.nextInt(100) < 50)
-          x += spd;
-      } else if (x > p.x && World.isFree((int) (getX() - spd), getY()) && !isColliding((int) (getX() - spd), getY())) {
-        if (Game.rand.nextInt(100) < 50)
-          x -= spd;
-      }
-      if (y < p.y && World.isFree(getX(), (int) (getY() + spd)) && !isColliding(getX(), (int) (getY() + spd))) {
-        if (Game.rand.nextInt(100) < 50)
-          y += spd;
-      } else if (y > p.y && World.isFree(getX(), (int) (getY() - spd)) && !isColliding(getX(), (int) (getY() - spd))) {
-        if (Game.rand.nextInt(100) < 50)
-          y -= spd;
+    // Está próximo do jogador?
+    if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 50) {
+      // Está próximo do jogador? Sim
+      // Está colidindo com o jogador?
+      if (isCollidingwithPlayer() == false) {
+        // Está colidindo com o jogador? Não
+        if (x < p.x && World.isFree((int) (getX() + spd), getY()) && !isColliding((int) (getX() + spd), getY())) {
+          if (Game.rand.nextInt(100) < 50)
+            x += spd;
+        } else if (x > p.x && World.isFree((int) (getX() - spd), getY())
+            && !isColliding((int) (getX() - spd), getY())) {
+          if (Game.rand.nextInt(100) < 50)
+            x -= spd;
+        }
+        if (y < p.y && World.isFree(getX(), (int) (getY() + spd)) && !isColliding(getX(), (int) (getY() + spd))) {
+          if (Game.rand.nextInt(100) < 50)
+            y += spd;
+        } else if (y > p.y && World.isFree(getX(), (int) (getY() - spd))
+            && !isColliding(getX(), (int) (getY() - spd))) {
+          if (Game.rand.nextInt(100) < 50)
+            y -= spd;
+        }
+      } else {
+        // Está colidindo com o jogador? Sim
+        if (Game.rand.nextInt(100) < 10 && !Game.player.isDamaged) {
+          Sound.hit.play();
+          if (Game.rand.nextInt(100) < 10) {
+            Game.player.life -= (int) (damage * 2);
+            Game.player.isDamaged = true;
+          } else {
+            Game.player.life -= (int) (damage);
+            Game.player.isDamaged = true;
+          }
+
+        }
       }
     } else {
-      // Colisão com Player
-      if (Game.rand.nextInt(100) < 10 && !Game.player.isDamaged) {
-        Sound.hit.play();
-        if (Game.rand.nextInt(100) < 10) {
-          Game.player.life -= (int) (damage * 2);
-          Game.player.isDamaged = true;
-          // System.out.println("DANO CRITICO!");
-        } else {
-          Game.player.life -= (int) (damage);
-          Game.player.isDamaged = true;
+      // Está próximo do jogador? Não
+      int r = Game.rand.nextInt(100);
+      if (!right && !left && !up && !down) {
+        if (r >= 0 && r < 25 && World.isFree((int) (getX() + spd), getY())
+            && !isColliding((int) (getX() + spd), getY())) {
+          right = true;
+        } else if (r >= 25 && r < 50 && World.isFree((int) (getX() - spd), getY())
+            && !isColliding((int) (getX() - spd), getY())) {
+          left = true;
+        } else if (r >= 50 && r < 75 && World.isFree(getX(), (int) (getY() + spd))
+            && !isColliding(getX(), (int) (getY() + spd))) {
+          up = true;
+        } else if (r >= 75 && r < 100 && World.isFree(getX(), (int) (getY() - spd))
+            && !isColliding(getX(), (int) (getY() - spd))) {
+          down = true;
         }
-
-        // System.out.println("Life: "+ Game.player.life);
       }
-
+      if (curDirFrames < targetDirFrames) {
+        curDirFrames++;
+        if (right && World.isFree((int) (getX() + spd), getY()) && !isColliding((int) (getX() + spd), getY())) {
+          if (Game.rand.nextInt(100) < 50)
+            x += spd;
+        } else if (left && World.isFree((int) (getX() - spd), getY())
+            && !isColliding((int) (getX() - spd), getY())) {
+          if (Game.rand.nextInt(100) < 50)
+            x -= spd;
+        } else if (down && World.isFree(getX(), (int) (getY() + spd)) && !isColliding(getX(), (int) (getY() + spd))) {
+          if (Game.rand.nextInt(100) < 50)
+            y += spd;
+        } else if (up && World.isFree(getX(), (int) (getY() - spd))
+            && !isColliding(getX(), (int) (getY() - spd))) {
+          if (Game.rand.nextInt(100) < 50)
+            y -= spd;
+        } else {
+          up = false;
+          down = false;
+          left = false;
+          right = false;
+          curDirFrames = 0;
+        }
+        if (curDirFrames == targetDirFrames) {
+          up = false;
+          down = false;
+          left = false;
+          right = false;
+          curDirFrames = 0;
+        }
+      }
     }
   }
 

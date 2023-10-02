@@ -65,15 +65,19 @@ public class Entity {
 
   }
 
+  public double calculateDistance(int x1, int y1, int x2, int y2) {
+    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) + (y1 - y2));
+  }
+
   public static boolean isColliding(Entity e1, Entity e2) {
     Rectangle e1mask = new Rectangle((int) e1.getX() + e1.maskx, (int) e1.getY() + e1.masky, e1.mask_width,
         e1.mask_height);
     Rectangle e2mask = new Rectangle((int) e2.getX() + e2.maskx, (int) e2.getY() + e2.masky, e2.mask_width,
         e2.mask_height);
-    if(e1mask.intersects(e2mask) && e1.z == e2.z) {
-      System.out.println(e1.z+" - "+e2.z);
+    if (e1mask.intersects(e2mask) && e1.z == e2.z) {
+      System.out.println(e1.z + " - " + e2.z);
       return true;
-    }        
+    }
     return false;
   }
 
